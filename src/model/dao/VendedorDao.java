@@ -2,6 +2,7 @@
 
 import java.util.List;
 
+import model.entities.Departamento;
 import model.entities.Vendedor;
 
 
@@ -12,7 +13,7 @@ public interface VendedorDao {
 	void deletePorId(Integer id);
 	Vendedor findById(Integer id);
 	List<Vendedor> findAll();
-	
+	List<Vendedor> findByDepartamento(Departamento depto);
 	
 
 }
