@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,8 +26,44 @@ public class VendedorDaoJdbc implements VendedorDao {
 
 	@Override
 	public void inserir(Vendedor obj) {
-		// TODO Auto-generated method stub
-
+		PreparedStatement pst = null;
+		try {
+			pst = conn.prepareStatement(
+			"INSERT INTO seller "
+			+"(Name, Email, BirthDate, BaseSalary, DepartmentId) "
+			+"VALUES "
+			+"(?, ?, ?, ?, ?)",
+			Statement.RETURN_GENERATED_KEYS);
+			
+			pst.setString(1, obj.getNome());
+			pst.setString(2, obj.getEmail());
+			pst.setDate(3,new java.sql.Date(obj.getAniversario().getTime()));
+			pst.setDouble(4, obj.getSalBase());
+			pst.setInt(5, obj.getDepartamento().getId());
+			
+			int linhasAfet = pst.executeUpdate();
+			
+			if(linhasAfet>0) {
+				ResultSet rs = pst.getGeneratedKeys();
+			
+				if(rs.next()) {
+					int id = rs.getInt(1);
+					obj.setId(id);
+				}
+				DB.closeResultSet(rs);
+			}
+			else {
+				throw new DbException("Erro inesperado!! Nenhuma linha foi afetada !");
+			}
+					
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(pst);
+			
+		}
 	}
 
 	@Override
@@ -92,17 +129,15 @@ public class VendedorDaoJdbc implements VendedorDao {
 
 	@Override
 	public List<Vendedor> findAll() {
-				
+
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		try {
-			pst = conn.prepareStatement(
-				"SELECT seller.*,department.Name as DepName "
-				+"FROM seller INNER JOIN department ON seller.DepartmentId = department.Id "
-				+"ORDER BY Name");
+			pst = conn.prepareStatement("SELECT seller.*,department.Name as DepName "
+					+ "FROM seller INNER JOIN department ON seller.DepartmentId = department.Id " + "ORDER BY Name");
 
 			rs = pst.executeQuery();
-			
+
 			List<Vendedor> listV = new ArrayList<>();
 			Map<Integer, Departamento> map = new HashMap<>();
 
@@ -124,8 +159,7 @@ public class VendedorDaoJdbc implements VendedorDao {
 			DB.closeResultSet(rs);
 
 		}
-		
-			
+
 	}
 
 	@SuppressWarnings("unused")
