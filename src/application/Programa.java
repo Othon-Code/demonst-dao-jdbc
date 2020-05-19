@@ -4,7 +4,6 @@ import java.util.List;
 
 import model.dao.DaoFactory;
 import model.dao.VendedorDao;
-import model.dao.impl.VendedorDaoJdbc;
 import model.entities.Departamento;
 import model.entities.Vendedor;
 
@@ -23,6 +22,22 @@ public class Programa {
 			for(Vendedor obj: list) {
 				System.out.println(obj);
 			}
+			
+			
+			System.out.println("\n======= TESTE 3: Vendedor findByAll =======");
+			List<Vendedor> list2  = vendDao.findAll();
+				for(Vendedor obj: list2) {
+					System.out.println(obj);
+				}
+			
+			
+			
+			
+			
+			
+			
+			
+			
 		
 	}
 
