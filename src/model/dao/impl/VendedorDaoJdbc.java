@@ -68,13 +68,37 @@ public class VendedorDaoJdbc implements VendedorDao {
 
 	@Override
 	public void updade(Vendedor obj) {
-		// TODO Auto-generated method stub
-
+			
+		PreparedStatement pst = null;
+		try {
+			pst = conn.prepareStatement(
+			"UPDATE seller SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? "
+					+"WHERE Id = ?");
+			
+			
+			
+			pst.setString(1, obj.getNome());
+			pst.setString(2, obj.getEmail());
+			pst.setDate(3,new java.sql.Date(obj.getAniversario().getTime()));
+			pst.setDouble(4, obj.getSalBase());
+			pst.setInt(5, obj.getDepartamento().getId());
+			pst.setInt(6, obj.getId());
+			
+			pst.executeUpdate();
+					
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(pst);
+			
+		}
 	}
 
 	@Override
 	public void deletePorId(Integer id) {
-		// TODO Auto-generated method stub
+		
 
 	}
 

@@ -33,6 +33,14 @@ public class Programa {
 		Vendedor novVend = new Vendedor(null, "Greg", "greg@gmail.com", new Date(), 4000.0, depart);
 		vendDao.inserir(novVend);
 		System.out.println("Inserido!!Novo id = " + novVend.getId());
+		
+		
+		System.out.println("\n======= TESTE 5: Vendedor update =======");
+		vend = vendDao.findById(1);
+		vend.setNome("Martha Wayne");
+		vendDao.updade(vend);
+		System.out.println("Atualização completa !");
+		
 
 	}
 
