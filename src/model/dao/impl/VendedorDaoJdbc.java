@@ -28,77 +28,79 @@ public class VendedorDaoJdbc implements VendedorDao {
 	public void inserir(Vendedor obj) {
 		PreparedStatement pst = null;
 		try {
-			pst = conn.prepareStatement(
-			"INSERT INTO seller "
-			+"(Name, Email, BirthDate, BaseSalary, DepartmentId) "
-			+"VALUES "
-			+"(?, ?, ?, ?, ?)",
-			Statement.RETURN_GENERATED_KEYS);
-			
+			pst = conn.prepareStatement("INSERT INTO seller " + "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
+					+ "VALUES " + "(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+
 			pst.setString(1, obj.getNome());
 			pst.setString(2, obj.getEmail());
-			pst.setDate(3,new java.sql.Date(obj.getAniversario().getTime()));
+			pst.setDate(3, new java.sql.Date(obj.getAniversario().getTime()));
 			pst.setDouble(4, obj.getSalBase());
 			pst.setInt(5, obj.getDepartamento().getId());
-			
+
 			int linhasAfet = pst.executeUpdate();
-			
-			if(linhasAfet>0) {
+
+			if (linhasAfet > 0) {
 				ResultSet rs = pst.getGeneratedKeys();
-			
-				if(rs.next()) {
+
+				if (rs.next()) {
 					int id = rs.getInt(1);
 					obj.setId(id);
 				}
 				DB.closeResultSet(rs);
-			}
-			else {
+			} else {
 				throw new DbException("Erro inesperado!! Nenhuma linha foi afetada !");
 			}
-					
-		}
-		catch(SQLException e) {
+
+		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
-		}
-		finally {
+		} finally {
 			DB.closeStatement(pst);
-			
+
 		}
 	}
 
 	@Override
 	public void updade(Vendedor obj) {
-			
+
 		PreparedStatement pst = null;
 		try {
 			pst = conn.prepareStatement(
-			"UPDATE seller SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? "
-					+"WHERE Id = ?");
-			
-			
-			
+					"UPDATE seller SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? "
+							+ "WHERE Id = ?");
+
 			pst.setString(1, obj.getNome());
 			pst.setString(2, obj.getEmail());
-			pst.setDate(3,new java.sql.Date(obj.getAniversario().getTime()));
+			pst.setDate(3, new java.sql.Date(obj.getAniversario().getTime()));
 			pst.setDouble(4, obj.getSalBase());
 			pst.setInt(5, obj.getDepartamento().getId());
 			pst.setInt(6, obj.getId());
-			
+
 			pst.executeUpdate();
-					
-		}
-		catch(SQLException e) {
+
+		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
-		}
-		finally {
+		} finally {
 			DB.closeStatement(pst);
-			
+
 		}
 	}
 
 	@Override
 	public void deletePorId(Integer id) {
-		
+		PreparedStatement pst = null;
+
+		try {
+			pst = conn.prepareStatement("DELETE FROM seller WHERE Id = ?");
+
+			pst.setInt(1, id);
+
+			pst.executeUpdate();
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(pst);
+		}
 
 	}
 
